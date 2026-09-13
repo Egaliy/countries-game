@@ -1,0 +1,81 @@
+/* 50 штатов США. id — FIPS-код (как в us-atlas). */
+export const GROUPS = [
+  { id: "northeast", name: { ru: "Северо-Восток", en: "Northeast", sr: "Severoistok" } },
+  { id: "midwest", name: { ru: "Средний Запад", en: "Midwest", sr: "Srednji zapad" } },
+  { id: "south", name: { ru: "Юг", en: "South", sr: "Jug" } },
+  { id: "west", name: { ru: "Запад", en: "West", sr: "Zapad" } },
+];
+
+const s = (id, group, ru, en, sr, aliases = []) => ({ id, group, name: { ru, en, sr }, aliases });
+
+export const ITEMS = [
+  s("01", "south", "Алабама", "Alabama", "Alabama"),
+  s("02", "west", "Аляска", "Alaska", "Aljaska"),
+  s("04", "west", "Аризона", "Arizona", "Arizona"),
+  s("05", "south", "Арканзас", "Arkansas", "Arkanzas"),
+  s("06", "west", "Калифорния", "California", "Kalifornija"),
+  s("08", "west", "Колорадо", "Colorado", "Kolorado"),
+  s("09", "northeast", "Коннектикут", "Connecticut", "Konektikat", ["Konektikut"]),
+  s("10", "south", "Делавэр", "Delaware", "Delaver", ["Делавар"]),
+  s("12", "south", "Флорида", "Florida", "Florida"),
+  s("13", "south", "Джорджия", "Georgia", "Džordžija", ["Джорджиа"]),
+  s("15", "west", "Гавайи", "Hawaii", "Havaji", ["Гаваи", "Гавайские острова", "Hawai"]),
+  s("16", "west", "Айдахо", "Idaho", "Ajdaho"),
+  s("17", "midwest", "Иллинойс", "Illinois", "Ilinois", ["Иллинойз"]),
+  s("18", "midwest", "Индиана", "Indiana", "Indijana"),
+  s("19", "midwest", "Айова", "Iowa", "Ajova"),
+  s("20", "midwest", "Канзас", "Kansas", "Kanzas"),
+  s("21", "south", "Кентукки", "Kentucky", "Kentaki"),
+  s("22", "south", "Луизиана", "Louisiana", "Luizijana"),
+  s("23", "northeast", "Мэн", "Maine", "Mejn", ["Мейн"]),
+  s("24", "south", "Мэриленд", "Maryland", "Merilend", ["Мэрилэнд"]),
+  s("25", "northeast", "Массачусетс", "Massachusetts", "Masačusets", ["Массачусетц", "Масачузетс", "Массачузетс"]),
+  s("26", "midwest", "Мичиган", "Michigan", "Mičigen", ["Mičigan"]),
+  s("27", "midwest", "Миннесота", "Minnesota", "Minesota"),
+  s("28", "south", "Миссисипи", "Mississippi", "Misisipi"),
+  s("29", "midwest", "Миссури", "Missouri", "Misuri"),
+  s("30", "west", "Монтана", "Montana", "Montana"),
+  s("31", "midwest", "Небраска", "Nebraska", "Nebraska"),
+  s("32", "west", "Невада", "Nevada", "Nevada"),
+  s("33", "northeast", "Нью-Гэмпшир", "New Hampshire", "Nju Hempšir", ["Нью-Хэмпшир", "Нью-Гемпшир", "Нью-Хемпшир"]),
+  s("34", "northeast", "Нью-Джерси", "New Jersey", "Nju Džerzi", ["Nju Džersi"]),
+  s("35", "west", "Нью-Мексико", "New Mexico", "Novi Meksiko", ["Nju Meksiko"]),
+  s("36", "northeast", "Нью-Йорк", "New York", "Njujork", ["Nju Jork"]),
+  s("37", "south", "Северная Каролина", "North Carolina", "Severna Karolina"),
+  s("38", "midwest", "Северная Дакота", "North Dakota", "Severna Dakota"),
+  s("39", "midwest", "Огайо", "Ohio", "Ohajo", ["Ohio"]),
+  s("40", "south", "Оклахома", "Oklahoma", "Oklahoma"),
+  s("41", "west", "Орегон", "Oregon", "Oregon"),
+  s("42", "northeast", "Пенсильвания", "Pennsylvania", "Pensilvanija", ["Пенсилвания"]),
+  s("44", "northeast", "Род-Айленд", "Rhode Island", "Rod Ajland", ["Роуд-Айленд"]),
+  s("45", "south", "Южная Каролина", "South Carolina", "Južna Karolina"),
+  s("46", "midwest", "Южная Дакота", "South Dakota", "Južna Dakota"),
+  s("47", "south", "Теннесси", "Tennessee", "Tenesi"),
+  s("48", "south", "Техас", "Texas", "Teksas"),
+  s("49", "west", "Юта", "Utah", "Juta"),
+  s("50", "northeast", "Вермонт", "Vermont", "Vermont"),
+  s("51", "south", "Виргиния", "Virginia", "Virdžinija", ["Вирджиния"]),
+  s("53", "west", "Вашингтон", "Washington", "Vašington"),
+  s("54", "south", "Западная Виргиния", "West Virginia", "Zapadna Virdžinija", ["Западная Вирджиния"]),
+  s("55", "midwest", "Висконсин", "Wisconsin", "Viskonsin"),
+  s("56", "west", "Вайоминг", "Wyoming", "Vajoming"),
+];
+
+export const NOT_ITEMS = [
+  {
+    words: ["Округ Колумбия", "Колумбия", "DC", "District of Columbia", "Distrikt Kolumbija"],
+    text: {
+      ru: "Округ Колумбия — не штат, а федеральный округ",
+      en: "The District of Columbia is not a state",
+      sr: "Distrikt Kolumbija nije savezna država",
+    },
+  },
+  {
+    words: ["Пуэрто-Рико", "Puerto Rico", "Portoriko"],
+    text: { ru: "Пуэрто-Рико — не штат, а территория США", en: "Puerto Rico is a territory, not a state", sr: "Portoriko je teritorija, a ne država" },
+  },
+  {
+    words: ["Гуам", "Guam"],
+    text: { ru: "Гуам — не штат, а территория США", en: "Guam is a territory, not a state", sr: "Guam je teritorija, a ne država" },
+  },
+];

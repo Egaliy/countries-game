@@ -1,0 +1,549 @@
+/* ─────────────────────────────────────────────
+   Игры с картой (штаты, регионы России, Италии).
+   Основа — src/styles.css «Стран мира», здесь только своё.
+   ───────────────────────────────────────────── */
+
+:root {
+  --land: #dedee3;
+  --land-hover: #cbcbd1;
+  --land-line: #ffffff;
+  --st-on: #0071e3;
+  --st-ok: #34c759;
+  --st-late: #ff9f0a;
+  --st-fail: #ff3b30;
+  --st-miss: #ff8a80;
+}
+
+:root[data-dark] {
+  --land: #3a3a3c;
+  --land-hover: #4f4f53;
+  --land-line: #1c1c1e;
+  --st-on: #0a84ff;
+  --st-ok: #30d158;
+  --st-late: #ff9f0a;
+  --st-fail: #ff453a;
+  --st-miss: #b3413a;
+
+}
+
+.page-map .controls .btn--quiet {
+  margin-left: auto;
+}
+
+.sm-only {
+  display: none;
+}
+
+/* ── Подсказка «найдите на карте» ─────────── */
+
+.prompt {
+  position: sticky;
+  top: 12px;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 12px 12px 12px 22px;
+  margin-bottom: 20px;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.prompt__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.prompt__label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-2);
+}
+
+.prompt__ok {
+  color: var(--green);
+  font-weight: 600;
+}
+
+.prompt__name {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  overflow-wrap: anywhere;
+}
+
+.prompt__name.is-enter {
+  animation: prompt-in 260ms var(--ease-out);
+}
+
+@keyframes prompt-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+    filter: blur(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+}
+
+.prompt__name.is-reveal {
+  color: var(--red);
+}
+
+.prompt__side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.tries {
+  display: flex;
+  gap: 5px;
+}
+
+.tries i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: background-color 200ms ease, transform 200ms var(--ease-out);
+}
+
+.tries i.is-used {
+  background: var(--surface-3);
+  transform: scale(0.8);
+}
+
+/* ── Карта ────────────────────────────────── */
+
+.map-card {
+  position: relative;
+  padding: 18px 18px 14px;
+  margin-bottom: 20px;
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+}
+
+.map {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: calc(100dvh - 150px);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: pan-x pan-y;
+}
+
+.map-card.is-zoomed .map {
+  touch-action: none;
+  cursor: grab;
+}
+
+.map-card.is-zoomed .map:active {
+  cursor: grabbing;
+}
+
+.st,
+.callout {
+  fill: var(--land);
+  stroke: var(--land-line);
+  stroke-width: var(--sw, 1);
+  stroke-linejoin: round;
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: fill 220ms ease;
+}
+
+.st--extra {
+  pointer-events: none;
+}
+
+.st--dc {
+  fill: var(--text-3);
+  stroke: none;
+}
+
+.callout-line {
+  stroke: var(--text-3);
+  stroke-width: calc(var(--sw, 1) * 0.8);
+  fill: none;
+  pointer-events: none;
+}
+
+.is-playing .st.is-open,
+.is-playing .callout.is-open {
+  cursor: pointer;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .is-playing .st.is-open:hover,
+  .is-playing .callout.is-open:hover {
+    fill: var(--land-hover);
+  }
+}
+
+.st.is-on,
+.callout.is-on {
+  fill: var(--st-on);
+}
+
+.st.is-ok,
+.callout.is-ok {
+  fill: var(--st-ok);
+}
+
+.st.is-late,
+.callout.is-late {
+  fill: var(--st-late);
+}
+
+.st.is-fail,
+.callout.is-fail {
+  fill: var(--st-fail);
+}
+
+.st.is-miss,
+.callout.is-miss {
+  fill: var(--st-miss);
+}
+
+.st.is-pop,
+.callout.is-pop {
+  animation: st-pop 520ms var(--ease-out);
+}
+
+@keyframes st-pop {
+  0% {
+    filter: brightness(1.35);
+  }
+  35% {
+    transform: scale(1.06);
+  }
+  100% {
+    transform: none;
+    filter: none;
+  }
+}
+
+.st.is-wrong,
+.callout.is-wrong {
+  animation: st-wrong 700ms ease;
+}
+
+@keyframes st-wrong {
+  0%,
+  60% {
+    fill: var(--st-fail);
+  }
+  100% {
+    fill: var(--land);
+  }
+}
+
+.st.is-reveal,
+.callout.is-reveal {
+  animation: st-reveal 1100ms ease;
+}
+
+@keyframes st-reveal {
+  0%,
+  30%,
+  60% {
+    fill: var(--st-fail);
+  }
+  15%,
+  45%,
+  75% {
+    fill: var(--land);
+  }
+  100% {
+    fill: var(--st-fail);
+  }
+}
+
+.zoom {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.zoom__btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--surface) 88%, transparent);
+  color: var(--text);
+  box-shadow: var(--shadow-sm), inset 0 0 0 1px var(--hairline);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: transform 160ms var(--ease-out), background-color 160ms ease;
+}
+
+.zoom__btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.zoom__btn:active {
+  transform: scale(0.94);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .zoom__btn:hover {
+    background: var(--surface-2);
+  }
+}
+
+.tip {
+  position: absolute;
+  z-index: 5;
+  left: 0;
+  top: 0;
+  padding: 6px 10px;
+  border-radius: 9px;
+  background: var(--text);
+  color: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, calc(-100% - 12px)) scale(0.96);
+  transition: opacity 120ms ease, transform 160ms var(--ease-out);
+}
+
+.tip small {
+  margin-left: 6px;
+  font-weight: 500;
+  opacity: 0.6;
+}
+
+.tip.is-visible {
+  opacity: 1;
+  transform: translate(-50%, calc(-100% - 12px)) scale(1);
+}
+
+.tip.is-wrong {
+  background: var(--red);
+  color: #fff;
+}
+
+.legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+  padding-top: 10px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.legend:empty {
+  display: none;
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+/* ── Результат ────────────────────────────── */
+
+.result-card {
+  background: var(--surface);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 20px;
+}
+
+.result__badge {
+  display: inline-flex;
+  align-items: center;
+  height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: var(--green-soft);
+  color: var(--green);
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+.result-card .cta {
+  width: 100%;
+  max-width: 560px;
+  margin-top: 22px;
+}
+
+/* ── Строки: силуэт вместо флага ──────────── */
+
+.page-map .c__flag svg {
+  width: 22px;
+  height: 22px;
+  fill: var(--st-on);
+  overflow: visible;
+}
+
+.page-map .c.is-miss .c__flag svg {
+  fill: var(--st-fail);
+}
+
+.page-map .c.is-miss .c__flag {
+  filter: none;
+  opacity: 1;
+}
+
+.toast__icon {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.toast__icon svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.toast.is-note {
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow-lg), inset 0 0 0 1px var(--hairline);
+}
+
+/* ── Адаптив ──────────────────────────────── */
+
+@media (max-width: 720px) {
+  .page-map .stats {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .page-map .stat {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1px;
+    padding: 6px 10px;
+    border-radius: 12px;
+    min-width: 0;
+  }
+
+  .page-map .stat__label {
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  .page-map .stat__value,
+  .page-map .stat--timer .stat__value {
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  .page-map .controls {
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  .page-map .controls .btn--quiet {
+    height: 34px;
+    padding: 0 8px;
+    font-size: 14px;
+  }
+
+  .lg-only {
+    display: none;
+  }
+
+  .sm-only {
+    display: inline;
+  }
+
+  .prompt {
+    top: 8px;
+    margin-bottom: 12px;
+    padding: 10px 10px 10px 16px;
+    gap: 10px;
+  }
+
+  .prompt__name {
+    font-size: 20px;
+  }
+
+  .prompt__side {
+    gap: 8px;
+  }
+
+  .prompt__side .btn {
+    padding: 0 12px;
+    height: 36px;
+    font-size: 14px;
+  }
+
+  .prompt__side .pill {
+    display: none;
+  }
+
+  .map-card {
+    padding: 8px 6px 10px;
+    border-radius: var(--r-lg);
+    margin-bottom: 12px;
+  }
+
+  .map {
+    max-height: none;
+  }
+
+  .zoom {
+    top: 8px;
+    right: 8px;
+  }
+
+  .zoom__btn {
+    width: 32px;
+    height: 32px;
+  }
+
+  .legend {
+    font-size: 12px;
+    gap: 4px 12px;
+  }
+
+  .page-map .region__grid {
+    columns: 150px;
+    column-gap: 8px;
+  }
+}
