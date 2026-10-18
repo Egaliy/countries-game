@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, interactive-widget=resizes-content" />
+    <meta name="theme-color" content="#f5f5f7" />
+    <meta name="description" content="Countries of the World quiz: name all 196 countries, guess flags and capitals." />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌍</text></svg>" />
+    <title>Countries of the World</title>
+    <script>
+      try {
+        var t = localStorage.getItem("countries-game-theme-v1");
+        if (t) {
+          document.documentElement.dataset.theme = t;
+          if (t === "dark" || t === "ocean" || t === "gold") document.documentElement.dataset.dark = "";
+        }
+      } catch (e) {}
+      // Язык из настроек: на адресе без префикса (английский) переводим на /ru или /rs, если там выбран другой.
+      try {
+        var seg0 = location.pathname.split("/")[1];
+        if (seg0 !== "ru" && seg0 !== "rs" && seg0 !== "sr" && seg0 !== "en") {
+          var pref = localStorage.getItem("countries-game-lang-v1");
+          var pre = pref === "ru" ? "/ru" : pref === "sr" ? "/rs" : "";
+          if (pre) location.replace(pre + (location.pathname === "/" ? "" : location.pathname) + location.search + location.hash);
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>

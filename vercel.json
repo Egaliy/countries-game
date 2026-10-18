@@ -1,0 +1,56 @@
+{
+  "redirects": [
+    { "source": "/en", "destination": "/", "permanent": true },
+    { "source": "/en/:path*", "destination": "/:path*", "permanent": true }
+  ],
+  "rewrites": [
+    {
+      "source": "/sr/about",
+      "destination": "/rs/about/index.html"
+    },
+    {
+      "source": "/:lang(ru|rs)/about",
+      "destination": "/:lang/about/index.html"
+    },
+    {
+      "source": "/about",
+      "destination": "/about/index.html"
+    },
+    {
+      "source": "/sr",
+      "destination": "/rs/index.html"
+    },
+    {
+      "source": "/sr/:game(states|russia)",
+      "destination": "/rs/:game/index.html"
+    },
+    {
+      "source": "/:lang(ru|rs)",
+      "destination": "/:lang/index.html"
+    },
+    {
+      "source": "/:game(states|russia)",
+      "destination": "/:game/index.html"
+    },
+    {
+      "source": "/:lang(ru|rs)/:game(states|russia)",
+      "destination": "/:lang/:game/index.html"
+    },
+    {
+      "source": "/profile",
+      "destination": "/profile/index.html"
+    },
+    {
+      "source": "/profile/:id",
+      "destination": "/profile/index.html"
+    },
+    {
+      "source": "/:lang(ru|rs|sr)/profile",
+      "destination": "/profile/index.html"
+    },
+    {
+      "source": "/:lang(ru|rs|sr)/profile/:id",
+      "destination": "/profile/index.html"
+    }
+  ]
+}
